@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+
+<title>
+Admin Panel
+</title>
+
+
+<style>
+
+
+body{
+
+font-family:Arial;
+background:#16222A;
+color:white;
+padding:20px;
+
+}
+
+
+input,button{
+
+padding:12px;
+margin:5px;
+border-radius:10px;
+
+}
+
+
+.worker{
+
+background:#ffffff22;
+padding:15px;
+border-radius:15px;
+margin:10px;
+
+}
+
+
+</style>
+
+</head>
+
+
+<body>
+
+
+<h1>
+🏭 L H Edging Admin Panel
+</h1>
+
+
+
+<h2>
+Add Worker
+</h2>
+
+
+<input id="name"
+placeholder="Worker Name">
+
+
+<input id="country"
+placeholder="Country">
+
+
+<input id="phone"
+placeholder="Phone">
+
+
+<input id="job"
+placeholder="Position">
+
+
+<button onclick="add()">
+ADD
+</button>
+
+
+<hr>
+
+
+<h2>
+Worker List
+</h2>
+
+
+<div id="list"></div>
+
+
+
+
+<script>
+
+
+let workers =
+JSON.parse(
+localStorage.getItem("workers")
+)
+||
+[];
+
+
+
+function show(){
+
+
+list.innerHTML="";
+
+
+workers.forEach(
+
+(w,i)=>{
+
+
+list.innerHTML +=`
+
+<div class="worker">
+
+👤 ${w.name}
+
+<br>
+
+🌍 ${w.country}
+
+<br>
+
+📞 ${w.phone}
+
+<br>
+
+💼 ${w.job}
+
+
+<br><br>
+
+
+<button onclick="del(${i})">
+
+Delete
+
+</button>
+
+
+</div>
+
+
+`;
+
+
+}
+
+
+)
+
+
+}
+
+
+
+function add(){
+
+
+workers.push({
+
+name:name.value,
+
+country:country.value,
+
+phone:phone.value,
+
+job:job.value
+
+
+});
+
+
+
+save();
+
+
+}
+
+
+
+function del(i){
+
+workers.splice(i,1);
+
+save();
+
+}
+
+
+
+function save(){
+
+localStorage.setItem(
+"workers",
+JSON.stringify(workers)
+);
+
+
+show();
+
+}
+
+
+
+show();
+
+
+</script>
+
+
+
+</body>
+
+</html>
