@@ -1,44 +1,61 @@
 <!DOCTYPE html>
 <html>
-
 <head>
 
-<title>
-Admin Panel
-</title>
-
+<title>L H Edging Admin</title>
 
 <style>
 
-
 body{
-
+margin:0;
 font-family:Arial;
-background:#16222A;
+background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
 color:white;
 padding:20px;
-
 }
 
+h1{
+text-align:center;
+color:#00ffff;
+}
 
-input,button{
+.panel{
+background:#ffffff22;
+padding:20px;
+border-radius:20px;
+}
 
-padding:12px;
-margin:5px;
+input,select,button{
+width:95%;
+padding:13px;
+margin:8px;
 border-radius:10px;
-
+border:none;
 }
 
+button{
+background:#00ffff;
+font-weight:bold;
+cursor:pointer;
+}
 
 .worker{
-
-background:#ffffff22;
-padding:15px;
+background:#0007;
+padding:20px;
 border-radius:15px;
-margin:10px;
-
+margin:15px 0;
 }
 
+img{
+width:100px;
+height:100px;
+border-radius:50%;
+object-fit:cover;
+}
+
+.search{
+background:white;
+}
 
 </style>
 
@@ -49,46 +66,88 @@ margin:10px;
 
 
 <h1>
-🏭 L H Edging Admin Panel
+🏭 L H Edging Sdn Bhd
+<br>
+Admin Dashboard
 </h1>
 
 
+<h2 id="total"></h2>
 
-<h2>
-Add Worker
-</h2>
+
+<div class="panel">
+
+
+<input id="photo"
+type="file"
+accept="image/*">
 
 
 <input id="name"
 placeholder="Worker Name">
 
 
-<input id="country"
-placeholder="Country">
+<input id="passport"
+placeholder="Passport Number">
 
 
 <input id="phone"
-placeholder="Phone">
+placeholder="Phone Number">
 
 
-<input id="job"
+<input id="department"
+placeholder="Department">
+
+
+<input id="position"
 placeholder="Position">
 
 
-<button onclick="add()">
-ADD
+<input id="salary"
+placeholder="Salary RM">
+
+
+<input id="join"
+type="date">
+
+
+<select id="status">
+
+<option>
+Active 🟢
+</option>
+
+<option>
+Inactive 🔴
+</option>
+
+</select>
+
+
+<button onclick="addWorker()">
+➕ Add Worker
 </button>
 
 
-<hr>
+</div>
+
 
 
 <h2>
-Worker List
+🔍 Search Worker
 </h2>
 
 
+<input
+class="search"
+id="search"
+onkeyup="show()"
+placeholder="Search Name">
+
+
+
 <div id="list"></div>
+
 
 
 
@@ -97,11 +156,66 @@ Worker List
 
 
 let workers =
-JSON.parse(
-localStorage.getItem("workers")
-)
-||
-[];
+JSON.parse(localStorage.getItem("workers"))
+|| [];
+
+
+function addWorker(){
+
+
+let file =
+photo.files[0];
+
+
+let reader =
+new FileReader();
+
+
+
+reader.onload=function(){
+
+
+workers.push({
+
+photo:reader.result,
+
+name:name.value,
+
+passport:passport.value,
+
+phone:phone.value,
+
+department:department.value,
+
+position:position.value,
+
+salary:salary.value,
+
+join:join.value,
+
+status:status.value
+
+});
+
+
+save();
+
+
+}
+
+
+if(file){
+
+reader.readAsDataURL(file);
+
+}else{
+
+alert("Upload Photo");
+
+}
+
+
+}
 
 
 
@@ -111,86 +225,91 @@ function show(){
 list.innerHTML="";
 
 
-workers.forEach(
+let find =
+search.value.toLowerCase();
 
-(w,i)=>{
+
+
+workers
+.filter(x=>x.name.toLowerCase().includes(find))
+.forEach((w,i)=>{
 
 
 list.innerHTML +=`
 
 <div class="worker">
 
-👤 ${w.name}
+<img src="${w.photo}">
+
+<h2>${w.name}</h2>
+
+🛂 Passport:
+${w.passport}
 
 <br>
 
-🌍 ${w.country}
+📞 Phone:
+${w.phone}
 
 <br>
 
-📞 ${w.phone}
+🏢 Department:
+${w.department}
 
 <br>
 
-💼 ${w.job}
+💼 Position:
+${w.position}
 
+<br>
+
+💰 Salary:
+RM ${w.salary}
+
+<br>
+
+📅 Join:
+${w.join}
+
+<br>
+
+Status:
+${w.status}
 
 <br><br>
 
 
-<button onclick="del(${i})">
-
-Delete
-
+<button onclick="remove(${i})">
+❌ Delete
 </button>
 
 
 </div>
 
-
 `;
-
-
-}
-
-
-)
-
-
-}
-
-
-
-function add(){
-
-
-workers.push({
-
-name:name.value,
-
-country:country.value,
-
-phone:phone.value,
-
-job:job.value
-
 
 });
 
 
-
-save();
+total.innerHTML =
+"👥 Total Workers : "
++
+workers.length;
 
 
 }
 
 
 
-function del(i){
+function remove(i){
+
+if(confirm("Delete Worker?")){
 
 workers.splice(i,1);
 
 save();
+
+}
 
 }
 
@@ -203,11 +322,9 @@ localStorage.setItem(
 JSON.stringify(workers)
 );
 
-
 show();
 
 }
-
 
 
 show();
@@ -216,7 +333,5 @@ show();
 </script>
 
 
-
 </body>
-
 </html>
